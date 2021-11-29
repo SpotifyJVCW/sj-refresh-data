@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Component;
 
+import javax.swing.*;
 import java.time.LocalDate;
+import java.util.List;
 
 import static java.util.Objects.isNull;
 
@@ -23,40 +25,47 @@ import static java.util.Objects.isNull;
 @Log
 public class RefreshArtistTrackTokenImpl implements RefreshArtistTrackToken {
 
-    private static final String CLIENT_ID = "1528ad8ae0c545948b332d110ead8ec0";
-
     private final SaveDataGateway saveDataGateway;
     private final SpotifyGateway spotifyGateway;
     private final ObjectToIdStringConverter converter;
 
     @Override
     public void execute() {
-        Token token = getRefreshAndSaveToken();
+        List<Token> tokens = saveDataGateway.getAllTokens();
+
+        for(Token token : tokens)
+            refreshOne(token.getClientId());
+    }
+
+    private void refreshOne(String clientId){
+        Token token = getRefreshAndSaveToken(clientId);
+
+        if(isNull(token))
+            return;
 
         try {
-            saveDataGateway.saveArtists(constructArtistHistoric(token.getAccessToken()), CLIENT_ID);
-            saveDataGateway.saveTracks(constructTrackHistoric(token.getAccessToken()), CLIENT_ID);
+            saveDataGateway.saveArtists(constructArtistHistoric(token.getAccessToken()), clientId);
+            saveDataGateway.saveTracks(constructTrackHistoric(token.getAccessToken()), clientId);
         }
         catch (Exception e){
             log.severe(e.getMessage());
             throw new SaveDataGatewayException(e.getMessage(), e.getCause());
         }
+        log.info("Refresh realizado com sucesso!  (ClientId: " + clientId + ")");
     }
 
-    private Token getRefreshAndSaveToken(){
+    private Token getRefreshAndSaveToken(String clientId){
         try {
-            Token token = saveDataGateway.getToken(CLIENT_ID);
-            token = spotifyGateway.refreshToken(CLIENT_ID, token.getRefreshToken());
+            Token token = saveDataGateway.getToken(clientId);
+            token = spotifyGateway.refreshToken(clientId, token.getRefreshToken());
 
-            if(isNull(token))
-                throw new FailRefreshTokenException("Não foi possível criar um novo refreshToken!");
+            if(isNull(token)){
+                log.severe("Não foi possível criar um novo refreshToken! (ClientId: " + clientId + ")");
+                return null;
+            }
 
-            saveDataGateway.refreshToken(CLIENT_ID, token);
+            saveDataGateway.refreshToken(clientId, token);
             return token;
-        }
-        catch (FailRefreshTokenException e){
-            log.severe(e.getMessage());
-            throw new FailRefreshTokenException(e.getMessage());
         }
         catch (Exception e){
             log.severe(e.getMessage());

@@ -13,4 +13,5 @@ public interface SaveDataConnectionApi {
     void saveToken(String clientId, String refreshToken);
 
     TokenEntity findTokenByClientId(String clientId);
+    List<TokenEntity> findAllTokens();
 }
