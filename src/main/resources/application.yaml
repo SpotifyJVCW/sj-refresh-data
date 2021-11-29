@@ -21,7 +21,7 @@ info:
     description: '@project.description@'
 
 save-data:
-  url: https://sit-sj-save-data.herokuapp.com
+  url: https://sj-save-data.herokuapp.com
   path:
     save-artists: /artists
     save-tracks: /tracks
