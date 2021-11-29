@@ -26,23 +26,23 @@ public class SaveDataConnectionApiImpl implements SaveDataConnectionApi {
     private String domainUrl;
 
     @Value("${save-data.path.save-artists}")
-    private String saveArtists;
+    private String saveArtistsPath;
 
     @Value("${save-data.path.save-tracks}")
-    private String saveTracks;
+    private String saveTracksPath;
 
     @Value("${save-data.path.refresh-token}")
-    private String refreshToken;
+    private String refreshTokenPath;
 
     @Value("${save-data.path.find-token}")
-    private String findToken;
+    private String findTokenPath;
 
 
     @Override
     public void saveArtist(List<ArtistHistoric> artistsHistoric, String clientId) {
         RestTemplate request = new RestTemplate();
         ResponseEntity<Void> response = request.postForEntity(
-                URI.create(domainUrl + saveArtists + "/" + clientId), artistsHistoric, Void.class);
+                URI.create(domainUrl + saveArtistsPath + "/" + clientId), artistsHistoric, Void.class);
 
         if(!response.getStatusCode().is2xxSuccessful())
             log.info("Houve um erro para mandar artists");
@@ -52,7 +52,7 @@ public class SaveDataConnectionApiImpl implements SaveDataConnectionApi {
     public void saveTrack(List<TrackHistoric> tracksHistoric, String clientId) {
         RestTemplate request = new RestTemplate();
         ResponseEntity<Void> response = request.postForEntity(
-                URI.create(domainUrl + saveTracks + "/" + clientId), tracksHistoric, Void.class);
+                URI.create(domainUrl + saveTracksPath + "/" + clientId), tracksHistoric, Void.class);
 
         if(!response.getStatusCode().is2xxSuccessful())
             log.info("Houve um erro para mandar tracks");
@@ -65,7 +65,7 @@ public class SaveDataConnectionApiImpl implements SaveDataConnectionApi {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         ResponseEntity<Void> response = request.postForEntity(
-                URI.create(domainUrl + refreshToken + "/" + clientId),
+                URI.create(domainUrl + "/" + refreshTokenPath + "/" + clientId),
                 new HttpEntity<>("{\"refreshToken\": \"" + refreshToken + "\"}", headers),
                 Void.class);
 
@@ -77,7 +77,7 @@ public class SaveDataConnectionApiImpl implements SaveDataConnectionApi {
     public TokenEntity findTokenByClientId(String clientId) {
         RestTemplate request = new RestTemplate();
         ResponseEntity<TokenEntity> response = request
-                .getForEntity(URI.create(domainUrl + findToken + "/" + clientId), TokenEntity.class);
+                .getForEntity(URI.create(domainUrl + findTokenPath + "/" + clientId), TokenEntity.class);
 
         if(!response.getStatusCode().is2xxSuccessful()){
             log.info("Houve um erro ao receber token");
