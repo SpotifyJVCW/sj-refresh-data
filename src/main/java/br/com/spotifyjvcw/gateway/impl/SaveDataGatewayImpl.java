@@ -4,6 +4,7 @@ import br.com.spotifyjvcw.domain.ArtistHistoric;
 import br.com.spotifyjvcw.domain.Token;
 import br.com.spotifyjvcw.domain.TrackHistoric;
 import br.com.spotifyjvcw.gateway.SaveDataGateway;
+import br.com.spotifyjvcw.gateway.converter.TokenEntityToTokenDomainConverter;
 import br.com.spotifyjvcw.gateway.entity.TokenEntity;
 import br.com.spotifyjvcw.gateway.savedata.SaveDataConnectionApi;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import static java.util.Objects.isNull;
 public class SaveDataGatewayImpl implements SaveDataGateway {
 
     private final SaveDataConnectionApi connectionApi;
+    private final TokenEntityToTokenDomainConverter tokenEntityToTokenDomainConverter;
 
     @Override
     public void saveArtists(ArtistHistoric artistHistoric, String clientId) {
@@ -36,10 +38,12 @@ public class SaveDataGatewayImpl implements SaveDataGateway {
         if(isNull(tokenEntity))
             return null;
 
-        return Token.builder()
-                .accessToken(tokenEntity.getAccessToken())
-                .refreshToken(tokenEntity.getRefreshToken())
-                .build();
+        return tokenEntityToTokenDomainConverter.execute(tokenEntity);
+    }
+
+    @Override
+    public List<Token> getAllTokens() {
+        return tokenEntityToTokenDomainConverter.execute(connectionApi.findAllTokens());
     }
 
     @Override

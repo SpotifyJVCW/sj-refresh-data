@@ -15,7 +15,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -85,5 +88,19 @@ public class SaveDataConnectionApiImpl implements SaveDataConnectionApi {
         }
 
         return response.getBody();
+    }
+
+    @Override
+    public List<TokenEntity> findAllTokens() {
+        RestTemplate request = new RestTemplate();
+        ResponseEntity<TokenEntity[]> response = request
+                .getForEntity(URI.create(domainUrl + findTokenPath), TokenEntity[].class);
+
+        if(!response.getStatusCode().is2xxSuccessful()){
+            log.info("Houve um erro ao receber token");
+            return new ArrayList<>();
+        }
+
+        return Arrays.asList(Objects.requireNonNull(response.getBody()));
     }
 }

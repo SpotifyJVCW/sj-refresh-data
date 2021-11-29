@@ -9,6 +9,7 @@ import lombok.*;
 @Builder
 public class Token {
 
+    private String clientId;
     private String accessToken;
     private String refreshToken;
 }
