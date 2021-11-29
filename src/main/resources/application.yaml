@@ -1,0 +1,30 @@
+spring:
+  profiles:
+    active: prod
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+
+info:
+  app:
+    version: '@project.version@'
+    name: '@project.name@'
+    encoding: '@project.build.sourceEncoding@'
+    java:
+      version: '@java.version@'
+    description: '@project.description@'
+
+save-data:
+  url: https://sit-sj-save-data.herokuapp.com
+  path:
+    save-artists: /artists
+    save-tracks: /tracks
+    refresh-token: /tokens/refresh
+    find-token: /tokens
+
