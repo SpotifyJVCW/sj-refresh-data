@@ -1,19 +1,12 @@
-FROM maven:3.6.0-jdk-11-slim AS build
-COPY src /home/app/src
-COPY pom.xml /home/app
-RUN mvn -f /home/app/pom.xml clean package
+FROM maven:3.8.2-jdk-11 AS build
+COPY . .
+RUN mvn clean package -DskipTests
 
 #
 # Package stage
 #
-FROM openjdk:11-jre-slim
-
-RUN groupadd -r springapp && useradd --no-log-init -r -g springapp springapp
-RUN mkdir /app
-
-WORKDIR /app
-
-COPY --from=build ./target/sj-refresh-data-1.1.1.jar /app/app.jar
-COPY ./application-docker.yaml /app/application.yaml
+FROM openjdk:11-jdk-slim
+COPY --from=build /target/sj-refresh-data-1.1.1.jar demo.jar
+# ENV PORT=8080
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+ENTRYPOINT ["java","-jar","demo.jar"]
