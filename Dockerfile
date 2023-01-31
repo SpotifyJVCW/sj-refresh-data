@@ -1,26 +1,13 @@
-FROM maven:3-openjdk-11
+FROM maven:3.6.0-jdk-11-slim AS build
+COPY src /home/app/src
+COPY pom.xml /home/app
+RUN mvn -f /home/app/pom.xml clean package
 
-ADD . /cxfbootsimple
-WORKDIR /cxfbootsimple
-
-# Just echo so we can see, if everything is there :)
-RUN ls -l
-
-# Run Maven build
-RUN mvn clean install
-
-FROM openjdk:11-oracle
-ARG RELEASE
-ENV BUILD_RELEASE=$RELEASE
-LABEL "vendor"="Spotify Wudarski" \
-        "version"="${BUILD_RELEASE}"
-RUN groupadd -r springapp && useradd --no-log-init -r -g springapp springapp
-RUN mkdir /app
-
-WORKDIR /app
-
-COPY ./target/sj-refresh-data.jar /app/app.jar
-COPY ./application-docker.yaml /app/
-
-USER springapp
-CMD [ "sh", "-c", "java $JAVA_OPTS -Dserver.port=$PORT -Djava.security.egd=file:/dev/./urandom -jar /app/app.jar --spring.config.location=file:///app/application-docker.yaml" ]
+#
+# Package stage
+#
+FROM openjdk:11-jre-slim
+COPY --from=build /home/app/target/sj-refresh-data.jar /usr/local/lib/app.jar
+COPY /home/app/application-docker.yaml /usr/local/lib/application.yaml
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","/usr/local/lib/app.jar"]
