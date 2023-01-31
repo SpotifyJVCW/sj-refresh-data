@@ -13,7 +13,7 @@ RUN mkdir /app
 
 WORKDIR /app
 
-COPY --from=build ./target/sj-refresh-data.jar /app/app.jar
+COPY --from=build ./target/sj-refresh-data-1.1.1.jar /app/app.jar
 COPY ./application-docker.yaml /app/application.yaml
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","/app/app.jar"]
