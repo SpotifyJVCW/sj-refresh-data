@@ -8,6 +8,6 @@ RUN mvn -f /home/app/pom.xml clean package
 #
 FROM openjdk:11-jre-slim
 COPY --from=build /home/app/target/sj-refresh-data.jar /usr/local/lib/app.jar
-COPY /home/app/application-docker.yaml /usr/local/lib/application.yaml
+COPY ./application-docker.yaml /usr/local/lib/application.yaml
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","/usr/local/lib/app.jar"]
