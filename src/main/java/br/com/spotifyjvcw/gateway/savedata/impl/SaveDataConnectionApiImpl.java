@@ -92,10 +92,12 @@ public class SaveDataConnectionApiImpl implements SaveDataConnectionApi {
 
     @Override
     public List<TokenEntity> findAllTokens() {
+        log.info("Request realizada ao buscar tokens");
         RestTemplate request = new RestTemplate();
         ResponseEntity<TokenEntity[]> response = request
                 .getForEntity(URI.create(domainUrl + findTokenPath), TokenEntity[].class);
 
+        log.info("Status da requisição ao buscar token no SAVE-DATA: " + response.getStatusCode().value());
         if(!response.getStatusCode().is2xxSuccessful()){
             log.info("Houve um erro ao receber token");
             return new ArrayList<>();

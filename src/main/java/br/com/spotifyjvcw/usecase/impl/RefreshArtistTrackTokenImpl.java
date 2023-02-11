@@ -4,7 +4,6 @@ import br.com.spotifyjvcw.domain.ArtistHistoric;
 import br.com.spotifyjvcw.domain.Token;
 import br.com.spotifyjvcw.domain.TrackHistoric;
 import br.com.spotifyjvcw.domain.enums.TermType;
-import br.com.spotifyjvcw.exception.especific.FailRefreshTokenException;
 import br.com.spotifyjvcw.exception.especific.SaveDataGatewayException;
 import br.com.spotifyjvcw.gateway.SaveDataGateway;
 import br.com.spotifyjvcw.gateway.SpotifyGateway;
@@ -12,14 +11,16 @@ import br.com.spotifyjvcw.usecase.RefreshArtistTrackToken;
 import br.com.spotifyjvcw.usecase.converter.ObjectToIdStringConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 
-import javax.swing.*;
 import java.time.LocalDate;
 import java.util.List;
 
 import static java.util.Objects.isNull;
 
+@EnableAsync
 @Component
 @RequiredArgsConstructor
 @Log
@@ -29,6 +30,7 @@ public class RefreshArtistTrackTokenImpl implements RefreshArtistTrackToken {
     private final SpotifyGateway spotifyGateway;
     private final ObjectToIdStringConverter converter;
 
+    @Async
     @Override
     public void execute() {
         List<Token> tokens = saveDataGateway.getAllTokens();
