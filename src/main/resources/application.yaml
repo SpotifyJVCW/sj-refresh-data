@@ -21,7 +21,7 @@ info:
     description: '@project.description@'
 
 save-data:
-  url: https://save-data.onrender.com
+  url: ${SAVA_DATA_URL}
   path:
     save-artists: /artists
     save-tracks: /tracks
