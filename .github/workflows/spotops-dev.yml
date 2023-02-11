@@ -1,0 +1,37 @@
+name: SpotifyJW devops dev CI
+
+on:
+  push:
+    branches: [ "develop" ]
+
+jobs:
+  build:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [ 11 ]
+    steps:
+      - name: Check git
+        uses: actions/checkout@v2
+      - name: Setup Java JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Build Maven
+        run: mvn clean install
+      - name: Run unit tests
+        run: mvn test
+      - name: Create a gitHub release/tag
+        id: release
+        uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install maven
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Update maven version
+        run: mvn -B versions:set -DnewVersion=${{ steps.release.outputs.tag_name }} -DgenerateBackupPoms=false
+      - name: Auto commit
+        uses: stefanzweifel/git-auto-commit-action@v4
