@@ -27,4 +27,3 @@ save-data:
     save-tracks: /tracks
     refresh-token: /tokens/refresh
     find-token: /tokens
-
