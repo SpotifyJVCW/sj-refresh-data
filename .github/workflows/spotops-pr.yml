@@ -1,0 +1,24 @@
+name: SpotifyJW devops dev CI
+
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+
+jobs:
+  build:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [ 11 ]
+    steps:
+      - name: Check git
+        uses: actions/checkout@v2
+      - name: Setup Java JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Build Maven
+        run: mvn clean install
+      - name: Run unit tests
+        run: mvn test
