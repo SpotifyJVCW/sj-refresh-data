@@ -5,12 +5,12 @@ import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import com.wrapper.spotify.requests.authorization.authorization_code.pkce.AuthorizationCodePKCERefreshRequest;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.ParseException;
 
 import java.io.IOException;
 
-@Log
+@Slf4j
 public class RefreshToken {
 
     private final AuthorizationCodePKCERefreshRequest authorizationCodePKCERefreshRequest;

@@ -5,7 +5,7 @@ import br.com.spotifyjvcw.domain.TrackHistoric;
 import br.com.spotifyjvcw.gateway.entity.TokenEntity;
 import br.com.spotifyjvcw.gateway.savedata.SaveDataConnectionApi;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,9 +20,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
-@Log
 public class SaveDataConnectionApiImpl implements SaveDataConnectionApi {
 
     @Value("${save-data.url}")
@@ -44,21 +44,21 @@ public class SaveDataConnectionApiImpl implements SaveDataConnectionApi {
     @Override
     public void saveArtist(List<ArtistHistoric> artistsHistoric, String clientId) {
         RestTemplate request = new RestTemplate();
-        ResponseEntity<Void> response = request.postForEntity(
-                URI.create(domainUrl + saveArtistsPath + "/" + clientId), artistsHistoric, Void.class);
+        ResponseEntity<String> response = request.postForEntity(
+                URI.create(domainUrl + saveArtistsPath + "/" + clientId), artistsHistoric, String.class);
 
         if(!response.getStatusCode().is2xxSuccessful())
-            log.info("Houve um erro para mandar artists");
+            log.error("Houve um erro para mandar artists do clienteId: {} | Erro: {}", clientId, response.getBody());
     }
 
     @Override
     public void saveTrack(List<TrackHistoric> tracksHistoric, String clientId) {
         RestTemplate request = new RestTemplate();
-        ResponseEntity<Void> response = request.postForEntity(
-                URI.create(domainUrl + saveTracksPath + "/" + clientId), tracksHistoric, Void.class);
+        ResponseEntity<String> response = request.postForEntity(
+                URI.create(domainUrl + saveTracksPath + "/" + clientId), tracksHistoric, String.class);
 
         if(!response.getStatusCode().is2xxSuccessful())
-            log.info("Houve um erro para mandar tracks");
+            log.error("Houve um erro para mandar tracks do clienteId: {} | Erro: {}", clientId, response.getBody());
     }
 
     @Override
@@ -67,13 +67,13 @@ public class SaveDataConnectionApiImpl implements SaveDataConnectionApi {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        ResponseEntity<Void> response = request.postForEntity(
+        ResponseEntity<String> response = request.postForEntity(
                 URI.create(domainUrl + "/" + refreshTokenPath + "/" + clientId),
                 new HttpEntity<>("{\"refreshToken\": \"" + refreshToken + "\"}", headers),
-                Void.class);
+                String.class);
 
         if(!response.getStatusCode().is2xxSuccessful())
-            log.info("Houve um erro para mandar token");
+            log.error("Houve um erro para mandar token do clienteId: {} | Erro: {}", clientId, response.getBody());
     }
 
     @Override
@@ -83,7 +83,7 @@ public class SaveDataConnectionApiImpl implements SaveDataConnectionApi {
                 .getForEntity(URI.create(domainUrl + findTokenPath + "/" + clientId), TokenEntity.class);
 
         if(!response.getStatusCode().is2xxSuccessful()){
-            log.info("Houve um erro ao receber token");
+            log.error("Houve um erro ao receber token do clienteId: {} | Erro: {}", clientId, response.getBody());
             return null;
         }
 
@@ -97,7 +97,7 @@ public class SaveDataConnectionApiImpl implements SaveDataConnectionApi {
                 .getForEntity(URI.create(domainUrl + findTokenPath), TokenEntity[].class);
 
         if(!response.getStatusCode().is2xxSuccessful()){
-            log.info("Houve um erro ao receber token");
+            log.error("Houve um erro ao receber todos os tokens | Erro: {}", (Object) response.getBody());
             return new ArrayList<>();
         }
 
