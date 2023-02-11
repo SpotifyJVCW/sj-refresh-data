@@ -5,7 +5,8 @@ RUN mvn clean package -DskipTests
 # Package stage
 #
 FROM openjdk:11-jdk-slim
-COPY --from=build /target/sj-refresh-data-1.1.1.jar demo.jar
+ARG JAR_FILE
+COPY --from=build ${JAR_FILE} demo.jar
 # ENV PORT=8080
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","demo.jar"]
