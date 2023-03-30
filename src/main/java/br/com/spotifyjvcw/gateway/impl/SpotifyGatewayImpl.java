@@ -4,13 +4,13 @@ import br.com.spotifyjvcw.domain.Token;
 import br.com.spotifyjvcw.domain.enums.TermType;
 import br.com.spotifyjvcw.gateway.SpotifyGateway;
 import br.com.spotifyjvcw.gateway.converter.TokenEntityToTokenDomainConverter;
-import br.com.spotifyjvcw.gateway.spotify.GetUserTopArtists;
-import br.com.spotifyjvcw.gateway.spotify.GetUserTopTracks;
-import br.com.spotifyjvcw.gateway.spotify.RefreshToken;
+import br.com.spotifyjvcw.gateway.spotify.*;
 import com.wrapper.spotify.model_objects.specification.Artist;
 import com.wrapper.spotify.model_objects.specification.Track;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -28,6 +28,18 @@ public class SpotifyGatewayImpl implements SpotifyGateway {
     public Track[] getTopTracksByTerm(TermType term, String accessToken) {
         GetUserTopTracks topTracks = new GetUserTopTracks(term.getDescription(), accessToken);
         return topTracks.getUsersTopTracks();
+    }
+
+    @Override
+    public Artist[] getSeveralArtistsById(List<String> idList, String accessToken) {
+        GetSeveralArtists getSeveralArtists = new GetSeveralArtists(idList.toArray(new String[0]), accessToken);
+        return getSeveralArtists.getUsersTopArtists();
+    }
+
+    @Override
+    public Track[] getSeveralTracksById(List<String> idList, String accessToken) {
+        GetSeveralTracks getSeveralTracks = new GetSeveralTracks(idList.toArray(new String[0]), accessToken);
+        return getSeveralTracks.getUsersTopTracks();
     }
 
     @Override
