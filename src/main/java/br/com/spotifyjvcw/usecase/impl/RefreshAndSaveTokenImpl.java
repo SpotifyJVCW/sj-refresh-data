@@ -24,7 +24,7 @@ public class RefreshAndSaveTokenImpl implements RefreshAndSaveToken {
         try {
             log.info("Iniciado refresh para clienteId: {}", clientId);
             Token token = saveDataGateway.getToken(clientId);
-            token = spotifyGateway.refreshToken(clientId, token.getRefreshToken());
+            token = spotifyGateway.refreshToken(token.getRefreshToken());
 
             if(isNull(token)){
                 log.error("Não foi possível criar um novo refreshToken! (ClientId: {})", clientId);

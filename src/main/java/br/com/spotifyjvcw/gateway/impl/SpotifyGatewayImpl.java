@@ -8,6 +8,7 @@ import br.com.spotifyjvcw.gateway.spotify.*;
 import com.wrapper.spotify.model_objects.specification.Artist;
 import com.wrapper.spotify.model_objects.specification.Track;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,6 +16,9 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class SpotifyGatewayImpl implements SpotifyGateway {
+
+    @Value("${spotify.clientIdApplication}")
+    private String clientIdApplication;
 
     private final TokenEntityToTokenDomainConverter entityToTokenDomainConverter;
 
@@ -43,8 +47,8 @@ public class SpotifyGatewayImpl implements SpotifyGateway {
     }
 
     @Override
-    public Token refreshToken(String clientId, String refreshToken) {
-        RefreshToken refreshTokenService = new RefreshToken(clientId, refreshToken);
+    public Token refreshToken(String refreshToken) {
+        RefreshToken refreshTokenService = new RefreshToken(clientIdApplication, refreshToken);
 
         return entityToTokenDomainConverter.execute(refreshTokenService.generateValidToken());
     }

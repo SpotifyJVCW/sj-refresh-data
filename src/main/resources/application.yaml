@@ -27,3 +27,6 @@ save-data:
     save-tracks: /tracks
     refresh-token: /tokens/refresh
     find-token: /tokens
+
+spotify:
+  clientIdApplication: ${SPOTIFY_CLIENTID_APPLICATION}
