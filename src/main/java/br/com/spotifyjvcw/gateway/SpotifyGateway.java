@@ -13,5 +13,5 @@ public interface SpotifyGateway {
     Track[] getTopTracksByTerm(TermType term, String accessToken);
     Artist[] getSeveralArtistsById(List<String> idList, String accessToken);
     Track[] getSeveralTracksById(List<String> idList, String accessToken);
-    Token refreshToken(String clientId, String refreshToken);
+    Token refreshToken(String refreshToken);
 }
