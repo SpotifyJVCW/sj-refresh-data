@@ -3,7 +3,7 @@ package br.com.spotifyjvcw.host.converter.impl;
 import br.com.spotifyjvcw.host.converter.TrackResponseConverter;
 import br.com.spotifyjvcw.host.data.response.ArtistResponse;
 import br.com.spotifyjvcw.host.data.response.TrackResponse;
-import com.wrapper.spotify.model_objects.specification.Track;
+import se.michaelthelin.spotify.model_objects.specification.Track;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

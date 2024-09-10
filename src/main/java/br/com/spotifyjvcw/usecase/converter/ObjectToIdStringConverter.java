@@ -1,7 +1,7 @@
 package br.com.spotifyjvcw.usecase.converter;
 
-import com.wrapper.spotify.model_objects.specification.Artist;
-import com.wrapper.spotify.model_objects.specification.Track;
+import se.michaelthelin.spotify.model_objects.specification.Artist;
+import se.michaelthelin.spotify.model_objects.specification.Track;
 
 public interface ObjectToIdStringConverter {
 

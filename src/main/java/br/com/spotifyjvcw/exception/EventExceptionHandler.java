@@ -1,8 +1,12 @@
 package br.com.spotifyjvcw.exception;
 
 import br.com.spotifyjvcw.exception.especific.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
@@ -13,7 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.validation.ConstraintViolationException;
+import jakarta.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,9 +25,7 @@ import java.util.List;
 public class EventExceptionHandler extends ResponseEntityExceptionHandler{
 
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
-                                                                  HttpHeaders headers, HttpStatus status, WebRequest request) {
-
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         String userMessage = "Mensagem inválida!";
         String devMessage = ex.getCause() == null ? null : ex.getCause().toString();
 
@@ -85,14 +87,10 @@ public class EventExceptionHandler extends ResponseEntityExceptionHandler{
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers, HttpStatus status, WebRequest request) {
-
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         List<Error> errors = createErrorsList(ex.getBindingResult());
-
         return handleExceptionInternal(ex, errors, headers, HttpStatus.BAD_REQUEST, request);
     }
-
 
     private List<Error> createErrorsList(BindingResult bindingResult) {
         List<Error> errors = new ArrayList<>();
@@ -105,27 +103,12 @@ public class EventExceptionHandler extends ResponseEntityExceptionHandler{
         return errors;
     }
 
+    @Getter
+    @Setter
+    @AllArgsConstructor
     public static class Error{
 
         private String userMessage;
         private String devMessage;
-
-        public Error(String userMessage, String devMessage) {
-            this.userMessage = userMessage;
-            this.devMessage = devMessage;
-        }
-
-        public String getUserMessage() {
-            return userMessage;
-        }
-        public void setUserMessage(String userMessage) {
-            this.userMessage = userMessage;
-        }
-        public String getDevMessage() {
-            return devMessage;
-        }
-        public void setDevMessage(String devMessage) {
-            this.devMessage = devMessage;
-        }
     }
 }
