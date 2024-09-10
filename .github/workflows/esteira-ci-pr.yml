@@ -1,4 +1,4 @@
-name: SpotifyJW devops dev CI
+name: esteira-ci-pr
 
 on:
   pull_request:
