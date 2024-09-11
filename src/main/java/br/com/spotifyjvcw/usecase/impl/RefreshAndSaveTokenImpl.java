@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 import static java.util.Objects.isNull;
 
 @Slf4j
@@ -30,8 +32,8 @@ public class RefreshAndSaveTokenImpl implements RefreshAndSaveToken {
                 log.error("Não foi possível criar um novo refreshToken! (ClientId: {})", clientId);
                 return null;
             }
-
-            saveDataGateway.refreshToken(clientId, token);
+            token.setClientId(clientId);
+            saveDataGateway.refreshToken(token);
             log.info("Refresh do clientId {} realizado com sucesso!", clientId);
             return token;
         }
@@ -39,5 +41,13 @@ public class RefreshAndSaveTokenImpl implements RefreshAndSaveToken {
             log.error(e.getMessage());
             throw new SaveDataGatewayException(e.getMessage(), e.getCause());
         }
+    }
+
+    @Override
+    public List<Token> executeAll() {
+        log.info("Busca por tokens iniciada");
+        List<Token> tokens = saveDataGateway.getAllTokens();
+        log.info("Quantidade de tokens encontrados: {}", tokens.size());
+        return tokens.stream().map(token -> execute(token.getClientId())).toList();
     }
 }

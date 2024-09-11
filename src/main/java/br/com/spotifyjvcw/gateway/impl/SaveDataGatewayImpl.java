@@ -5,19 +5,19 @@ import br.com.spotifyjvcw.domain.Token;
 import br.com.spotifyjvcw.domain.TrackHistoric;
 import br.com.spotifyjvcw.gateway.SaveDataGateway;
 import br.com.spotifyjvcw.gateway.converter.TokenEntityToTokenDomainConverter;
-import br.com.spotifyjvcw.gateway.entity.TokenEntity;
+import br.com.spotifyjvcw.gateway.repository.TokenRepository;
+import br.com.spotifyjvcw.gateway.repository.entity.TokenEntity;
 import br.com.spotifyjvcw.gateway.savedata.SaveDataConnectionApi;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static java.util.Objects.isNull;
-
 @Component
 @RequiredArgsConstructor
 public class SaveDataGatewayImpl implements SaveDataGateway {
 
+    private final TokenRepository tokenRepository;
     private final SaveDataConnectionApi connectionApi;
     private final TokenEntityToTokenDomainConverter tokenEntityToTokenDomainConverter;
 
@@ -33,21 +33,21 @@ public class SaveDataGatewayImpl implements SaveDataGateway {
 
     @Override
     public Token getToken(String clientId) {
-        TokenEntity tokenEntity = connectionApi.findTokenByClientId(clientId);
-
-        if(isNull(tokenEntity))
-            return null;
-
-        return tokenEntityToTokenDomainConverter.execute(tokenEntity);
+        return tokenRepository.findById(clientId)
+                .map(tokenEntityToTokenDomainConverter::execute)
+                .orElse(null);
     }
 
     @Override
     public List<Token> getAllTokens() {
-        return tokenEntityToTokenDomainConverter.execute(connectionApi.findAllTokens());
+        return tokenEntityToTokenDomainConverter.execute(tokenRepository.findAll());
     }
 
     @Override
-    public void refreshToken(String clientId, Token token) {
-        connectionApi.saveToken(clientId, token.getRefreshToken());
+    public void refreshToken(Token token) {
+        TokenEntity tokenEntity = tokenRepository.findById(token.getClientId())
+                        .orElseThrow(() -> new RuntimeException("Token not found"));
+        tokenEntity.setRefreshToken(token.getRefreshToken());
+        tokenRepository.save(tokenEntity);
     }
 }

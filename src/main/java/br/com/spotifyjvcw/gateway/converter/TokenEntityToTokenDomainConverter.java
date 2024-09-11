@@ -1,7 +1,7 @@
 package br.com.spotifyjvcw.gateway.converter;
 
 import br.com.spotifyjvcw.domain.Token;
-import br.com.spotifyjvcw.gateway.entity.TokenEntity;
+import br.com.spotifyjvcw.gateway.repository.entity.TokenEntity;
 
 import java.util.List;
 

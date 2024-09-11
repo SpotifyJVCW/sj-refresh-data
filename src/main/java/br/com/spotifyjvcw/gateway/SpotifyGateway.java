@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface SpotifyGateway {
 
+    void updateMonthPlaylist(String accessToken, String clientId, List<String> idTracks);
     Artist[] getTopArtistsByTerm(TermType term, String accessToken);
     Track[] getTopTracksByTerm(TermType term, String accessToken);
     Artist[] getSeveralArtistsById(List<String> idList, String accessToken);

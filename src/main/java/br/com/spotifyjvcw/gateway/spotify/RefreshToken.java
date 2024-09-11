@@ -1,6 +1,6 @@
 package br.com.spotifyjvcw.gateway.spotify;
 
-import br.com.spotifyjvcw.gateway.entity.TokenEntity;
+import br.com.spotifyjvcw.gateway.repository.entity.TokenEntity;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
