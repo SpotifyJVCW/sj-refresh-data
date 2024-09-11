@@ -2,7 +2,7 @@ package br.com.spotifyjvcw.gateway.savedata.impl;
 
 import br.com.spotifyjvcw.domain.ArtistHistoric;
 import br.com.spotifyjvcw.domain.TrackHistoric;
-import br.com.spotifyjvcw.gateway.entity.TokenEntity;
+import br.com.spotifyjvcw.gateway.repository.entity.TokenEntity;
 import br.com.spotifyjvcw.gateway.savedata.SaveDataConnectionApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -6,12 +6,15 @@ import br.com.spotifyjvcw.gateway.SpotifyGateway;
 import br.com.spotifyjvcw.gateway.converter.TokenEntityToTokenDomainConverter;
 import br.com.spotifyjvcw.gateway.spotify.*;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
+import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -21,6 +24,26 @@ public class SpotifyGatewayImpl implements SpotifyGateway {
     private String clientIdApplication;
 
     private final TokenEntityToTokenDomainConverter entityToTokenDomainConverter;
+    private static final String PLAYLIST_NAME = "Top 50 Tracks of the Month";
+
+    @Override
+    public void updateMonthPlaylist(String accessToken, String clientId, List<String> idTracks) {
+        CreatePlaylist createPlaylist = new CreatePlaylist(accessToken, clientId, PLAYLIST_NAME);
+        GetCurrentPlaylists currentPlaylists = new GetCurrentPlaylists(accessToken);
+        PlaylistSimplified[] playlistSimplifieds = currentPlaylists.get();
+
+        Optional<PlaylistSimplified> playlistSimplifiedOptional = Arrays.stream(playlistSimplifieds)
+                .filter(playlistActual -> playlistActual.getName().equals(PLAYLIST_NAME))
+                .findFirst();
+
+        String playlistId = playlistSimplifiedOptional
+                .map(PlaylistSimplified::getId)
+                .orElse(createPlaylist.create().getId());
+
+        idTracks = idTracks.stream().map(x -> "spotify:track:" + x).toList();
+        UpdatePlaylist updatePlaylist = new UpdatePlaylist(accessToken, playlistId, idTracks.toArray(new String[0]));
+        updatePlaylist.update();
+    }
 
     @Override
     public Artist[] getTopArtistsByTerm(TermType term, String accessToken) {

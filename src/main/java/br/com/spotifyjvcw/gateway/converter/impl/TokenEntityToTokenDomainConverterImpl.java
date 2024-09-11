@@ -2,7 +2,7 @@ package br.com.spotifyjvcw.gateway.converter.impl;
 
 import br.com.spotifyjvcw.domain.Token;
 import br.com.spotifyjvcw.gateway.converter.TokenEntityToTokenDomainConverter;
-import br.com.spotifyjvcw.gateway.entity.TokenEntity;
+import br.com.spotifyjvcw.gateway.repository.entity.TokenEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -1,14 +1,17 @@
-package br.com.spotifyjvcw.gateway.entity;
+package br.com.spotifyjvcw.gateway.repository.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.*;
 
-@Getter
-@Setter
+@Data
+@Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class TokenEntity {
 
+    @Id
     private String clientId;
     private String accessToken;
     private String refreshToken;
