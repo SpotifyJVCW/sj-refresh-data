@@ -1,18 +1,21 @@
 package br.com.spotifyjvcw.gateway.repository.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import lombok.*;
 
 @Data
-@Entity
+@DynamoDBTable(tableName = "token")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class TokenEntity {
 
-    @Id
+    @DynamoDBHashKey(attributeName = "clientId")
     private String clientId;
+    @DynamoDBAttribute(attributeName = "accessToken")
     private String accessToken;
+    @DynamoDBAttribute(attributeName = "refreshToken")
     private String refreshToken;
 }
