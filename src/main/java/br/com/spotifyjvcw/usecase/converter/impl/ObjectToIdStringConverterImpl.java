@@ -1,8 +1,8 @@
 package br.com.spotifyjvcw.usecase.converter.impl;
 
 import br.com.spotifyjvcw.usecase.converter.ObjectToIdStringConverter;
-import com.wrapper.spotify.model_objects.specification.Artist;
-import com.wrapper.spotify.model_objects.specification.Track;
+import se.michaelthelin.spotify.model_objects.specification.Artist;
+import se.michaelthelin.spotify.model_objects.specification.Track;
 import org.springframework.stereotype.Component;
 
 @Component

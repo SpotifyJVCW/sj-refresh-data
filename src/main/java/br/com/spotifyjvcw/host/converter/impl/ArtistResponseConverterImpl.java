@@ -2,7 +2,7 @@ package br.com.spotifyjvcw.host.converter.impl;
 
 import br.com.spotifyjvcw.host.converter.ArtistResponseConverter;
 import br.com.spotifyjvcw.host.data.response.ArtistResponse;
-import com.wrapper.spotify.model_objects.specification.Artist;
+import se.michaelthelin.spotify.model_objects.specification.Artist;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

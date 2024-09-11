@@ -10,14 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: [ 11 ]
+        java-version: [ 21 ]
     steps:
       - name: Check git
         uses: actions/checkout@v2
       - name: Setup Java JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 11
+          java-version: 21
       - name: Build Maven
         run: mvn clean install
       - name: Run unit tests
