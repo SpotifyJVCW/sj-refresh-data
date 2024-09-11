@@ -1,6 +1,6 @@
 package br.com.spotifyjvcw.usecase;
 
-import com.wrapper.spotify.model_objects.specification.Track;
+import se.michaelthelin.spotify.model_objects.specification.Track;
 
 import java.util.List;
 

@@ -4,7 +4,7 @@ import br.com.spotifyjvcw.domain.Token;
 import br.com.spotifyjvcw.gateway.SpotifyGateway;
 import br.com.spotifyjvcw.usecase.FindArtistsById;
 import br.com.spotifyjvcw.usecase.RefreshAndSaveToken;
-import com.wrapper.spotify.model_objects.specification.Artist;
+import se.michaelthelin.spotify.model_objects.specification.Artist;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
