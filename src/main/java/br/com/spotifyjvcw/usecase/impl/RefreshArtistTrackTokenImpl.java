@@ -6,7 +6,7 @@ import br.com.spotifyjvcw.domain.TrackHistoric;
 import br.com.spotifyjvcw.domain.enums.TermType;
 import br.com.spotifyjvcw.exception.especific.SaveDataGatewayException;
 import br.com.spotifyjvcw.gateway.SaveDataGateway;
-import br.com.spotifyjvcw.gateway.SpotifyGateway;
+import br.com.spotifyjvcw.gateway.spotify.SpotifyCallApi;
 import br.com.spotifyjvcw.usecase.RefreshAndSaveToken;
 import br.com.spotifyjvcw.usecase.RefreshArtistTrackToken;
 import br.com.spotifyjvcw.usecase.converter.ObjectToIdStringConverter;
@@ -29,7 +29,6 @@ public class RefreshArtistTrackTokenImpl implements RefreshArtistTrackToken {
 
     private final RefreshAndSaveToken refreshAndSaveToken;
     private final SaveDataGateway saveDataGateway;
-    private final SpotifyGateway spotifyGateway;
     private final ObjectToIdStringConverter converter;
 
     @Async
@@ -64,24 +63,24 @@ public class RefreshArtistTrackTokenImpl implements RefreshArtistTrackToken {
     private ArtistHistoric constructArtistHistoric(String accessToken){
         return ArtistHistoric.builder()
                     .date(LocalDate.now())
-                    .artistsLong(converter.execute(spotifyGateway
-                            .getTopArtistsByTerm(TermType.LONG, accessToken)))
-                    .artistsMedium(converter.execute(spotifyGateway
-                            .getTopArtistsByTerm(TermType.MEDIUM, accessToken)))
-                    .artistsShort(converter.execute(spotifyGateway
-                            .getTopArtistsByTerm(TermType.SHORT, accessToken))).build();
+                    .artistsLong(converter.execute(SpotifyCallApi
+                            .getTopArtistsByTerm(TermType.LONG.getDescription(), accessToken)))
+                    .artistsMedium(converter.execute(SpotifyCallApi
+                            .getTopArtistsByTerm(TermType.MEDIUM.getDescription(), accessToken)))
+                    .artistsShort(converter.execute(SpotifyCallApi
+                            .getTopArtistsByTerm(TermType.SHORT.getDescription(), accessToken))).build();
 
     }
 
     private TrackHistoric constructTrackHistoric(String accessToken){
         return TrackHistoric.builder()
                 .date(LocalDate.now())
-                .tracksLong(converter.execute(spotifyGateway
-                        .getTopTracksByTerm(TermType.LONG, accessToken)))
-                .tracksMedium(converter.execute(spotifyGateway
-                        .getTopTracksByTerm(TermType.MEDIUM, accessToken)))
-                .tracksShort(converter.execute(spotifyGateway
-                        .getTopTracksByTerm(TermType.SHORT, accessToken))).build();
+                .tracksLong(converter.execute(SpotifyCallApi
+                        .getTopTracksByTerm(TermType.LONG.getDescription(), accessToken)))
+                .tracksMedium(converter.execute(SpotifyCallApi
+                        .getTopTracksByTerm(TermType.MEDIUM.getDescription(), accessToken)))
+                .tracksShort(converter.execute(SpotifyCallApi
+                        .getTopTracksByTerm(TermType.SHORT.getDescription(), accessToken))).build();
 
     }
 }

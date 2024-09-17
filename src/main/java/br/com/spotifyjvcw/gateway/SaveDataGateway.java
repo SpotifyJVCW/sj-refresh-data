@@ -13,5 +13,5 @@ public interface SaveDataGateway {
 
     Token getToken(String clientId);
     List<Token> getAllTokens();
-    void refreshToken(String clientId, Token token);
+    void refreshToken(Token token);
 }

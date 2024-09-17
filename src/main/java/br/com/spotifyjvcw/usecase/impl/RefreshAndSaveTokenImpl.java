@@ -3,11 +3,14 @@ package br.com.spotifyjvcw.usecase.impl;
 import br.com.spotifyjvcw.domain.Token;
 import br.com.spotifyjvcw.exception.especific.SaveDataGatewayException;
 import br.com.spotifyjvcw.gateway.SaveDataGateway;
-import br.com.spotifyjvcw.gateway.SpotifyGateway;
+import br.com.spotifyjvcw.gateway.spotify.SpotifyCallApi;
 import br.com.spotifyjvcw.usecase.RefreshAndSaveToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 import static java.util.Objects.isNull;
 
@@ -17,21 +20,40 @@ import static java.util.Objects.isNull;
 public class RefreshAndSaveTokenImpl implements RefreshAndSaveToken {
 
     private final SaveDataGateway saveDataGateway;
-    private final SpotifyGateway spotifyGateway;
+
+    @Value("${spotify.clientIdApplication}")
+    private String clientIdApplication;
 
     @Override
     public Token execute(String clientId) {
+        return execute(saveDataGateway.getToken(clientId));
+    }
+
+    @Override
+    public List<Token> executeAll() {
+        log.info("Busca por tokens iniciada");
+        List<Token> tokens = saveDataGateway.getAllTokens();
+        log.info("Quantidade de tokens encontrados: {}", tokens.size());
+        return tokens.stream().map(this::execute).toList();
+    }
+
+    private Token execute(Token token){
         try {
+            if (isNull(token)) {
+                log.error("Token não encontrado!");
+                return null;
+            }
+
+            String clientId = token.getClientId();
             log.info("Iniciado refresh para clienteId: {}", clientId);
-            Token token = saveDataGateway.getToken(clientId);
-            token = spotifyGateway.refreshToken(token.getRefreshToken());
+            token = SpotifyCallApi.refreshToken(token.getRefreshToken(), clientIdApplication);
 
             if(isNull(token)){
                 log.error("Não foi possível criar um novo refreshToken! (ClientId: {})", clientId);
                 return null;
             }
-
-            saveDataGateway.refreshToken(clientId, token);
+            token.setClientId(clientId);
+            saveDataGateway.refreshToken(token);
             log.info("Refresh do clientId {} realizado com sucesso!", clientId);
             return token;
         }
