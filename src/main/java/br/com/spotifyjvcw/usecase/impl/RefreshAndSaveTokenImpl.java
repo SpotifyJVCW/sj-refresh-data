@@ -23,9 +23,26 @@ public class RefreshAndSaveTokenImpl implements RefreshAndSaveToken {
 
     @Override
     public Token execute(String clientId) {
+        return execute(saveDataGateway.getToken(clientId));
+    }
+
+    @Override
+    public List<Token> executeAll() {
+        log.info("Busca por tokens iniciada");
+        List<Token> tokens = saveDataGateway.getAllTokens();
+        log.info("Quantidade de tokens encontrados: {}", tokens.size());
+        return tokens.stream().map(this::execute).toList();
+    }
+
+    private Token execute(Token token){
         try {
+            if (isNull(token)) {
+                log.error("Token não encontrado!");
+                return null;
+            }
+
+            String clientId = token.getClientId();
             log.info("Iniciado refresh para clienteId: {}", clientId);
-            Token token = saveDataGateway.getToken(clientId);
             token = spotifyGateway.refreshToken(token.getRefreshToken());
 
             if(isNull(token)){
@@ -41,13 +58,5 @@ public class RefreshAndSaveTokenImpl implements RefreshAndSaveToken {
             log.error(e.getMessage());
             throw new SaveDataGatewayException(e.getMessage(), e.getCause());
         }
-    }
-
-    @Override
-    public List<Token> executeAll() {
-        log.info("Busca por tokens iniciada");
-        List<Token> tokens = saveDataGateway.getAllTokens();
-        log.info("Quantidade de tokens encontrados: {}", tokens.size());
-        return tokens.stream().map(token -> execute(token.getClientId())).toList();
     }
 }
