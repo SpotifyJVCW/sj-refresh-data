@@ -36,10 +36,12 @@ public class SpotifyGatewayImpl implements SpotifyGateway {
                 .filter(playlistActual -> playlistActual.getName().equals(PLAYLIST_NAME))
                 .findFirst();
 
-        String playlistId = playlistSimplifiedOptional
-                .map(PlaylistSimplified::getId)
-                .orElse(createPlaylist.create().getId());
+        Optional<String> playlistIdOptional = playlistSimplifiedOptional.map(PlaylistSimplified::getId);
+        if (playlistIdOptional.isEmpty()) {
+            playlistIdOptional = Optional.of(createPlaylist.create().getId());
+        }
 
+        String playlistId = playlistIdOptional.get();
         idTracks = idTracks.stream().map(x -> "spotify:track:" + x).toList();
         UpdatePlaylist updatePlaylist = new UpdatePlaylist(accessToken, playlistId, idTracks.toArray(new String[0]));
         updatePlaylist.update();
