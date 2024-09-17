@@ -1,7 +1,7 @@
 package br.com.spotifyjvcw.usecase.impl;
 
 import br.com.spotifyjvcw.domain.Token;
-import br.com.spotifyjvcw.gateway.SpotifyGateway;
+import br.com.spotifyjvcw.gateway.spotify.SpotifyCallApi;
 import br.com.spotifyjvcw.usecase.FindTracksById;
 import br.com.spotifyjvcw.usecase.RefreshAndSaveToken;
 import se.michaelthelin.spotify.model_objects.specification.Track;
@@ -14,11 +14,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FindTracksByIdImpl implements FindTracksById {
 
-    private final SpotifyGateway spotifyGateway;
     private final RefreshAndSaveToken refreshAndSaveToken;
     @Override
     public List<Track> execute(List<String> trackIdList, String clientId) {
         Token token = refreshAndSaveToken.execute(clientId);
-        return List.of(spotifyGateway.getSeveralTracksById(trackIdList, token.getAccessToken()));
+
+        String[] trackIdArray = trackIdList.toArray(new String[0]);
+        return List.of(SpotifyCallApi.getSeveralTracksById(trackIdArray, token.getAccessToken()));
     }
 }
