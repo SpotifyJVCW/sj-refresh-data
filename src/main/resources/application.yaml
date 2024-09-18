@@ -30,3 +30,8 @@ save-data:
 
 spotify:
   clientIdApplication: ${SPOTIFY_CLIENTID_APPLICATION}
+  redirectUri: ${SPOTIFY_REDIRECTURI}
+  authorizationUri: ${SPOTIFY_AUTHORIZATIONURI}
+  codeChallenge: ${SPOTIFY_CODECHALLENGE}
+  codeVerifier: ${SPOTIFY_CODEVERIFIER}
+
