@@ -50,4 +50,13 @@ public class SaveDataGatewayImpl implements SaveDataGateway {
         tokenEntity.setRefreshToken(token.getRefreshToken());
         tokenRepository.save(tokenEntity);
     }
+
+    @Override
+    public void createToken(Token token) {
+        tokenRepository.save(TokenEntity.builder()
+                .clientId(token.getClientId())
+                .accessToken(token.getAccessToken())
+                .refreshToken(token.getRefreshToken())
+                .build());
+    }
 }

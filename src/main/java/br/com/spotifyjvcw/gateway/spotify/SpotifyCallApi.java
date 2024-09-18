@@ -16,6 +16,7 @@ import se.michaelthelin.spotify.requests.data.playlists.CreatePlaylistRequest;
 import se.michaelthelin.spotify.requests.data.playlists.GetListOfCurrentUsersPlaylistsRequest;
 import se.michaelthelin.spotify.requests.data.playlists.ReplacePlaylistsItemsRequest;
 import se.michaelthelin.spotify.requests.data.tracks.GetSeveralTracksRequest;
+import se.michaelthelin.spotify.requests.data.users_profile.GetCurrentUsersProfileRequest;
 
 import java.io.IOException;
 import java.util.List;
@@ -115,6 +116,14 @@ public class SpotifyCallApi<C extends AbstractRequest<R>, R> {
                         .getSeveralTracks(ids)
                         .build())
                 .execute().orElse(new Track[0]);
+    }
+
+        public static User getUserInformation(String accessToken) {
+        SpotifyCallApi<GetCurrentUsersProfileRequest, User> spotifyCallApi = new SpotifyCallApi<>(accessToken);
+        return spotifyCallApi.call(spotifyCallApi.builder()
+                        .getCurrentUsersProfile()
+                        .build())
+                .execute().orElse(null);
     }
 
     public static Token refreshToken(String refreshToken, String clientIdApplication) {
