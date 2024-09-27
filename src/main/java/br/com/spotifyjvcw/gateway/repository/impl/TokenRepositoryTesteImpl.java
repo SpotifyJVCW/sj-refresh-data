@@ -21,14 +21,17 @@ import java.util.Optional;
 
 @Slf4j
 @Repository
-@Profile("aws")
-public class TokenRepositoryImpl implements TokenRepository {
+@Profile("test")
+public class TokenRepositoryTesteImpl implements TokenRepository {
 
     @Value("${aws.secretKey}")
     private String secretKey;
 
     @Value("${aws.accessKeyId}")
     private String accessKey;
+
+    @Value("${aws.clientid-test}")
+    private String clientIdTest;
 
     private DynamoDBMapper mapper;
 
@@ -44,7 +47,7 @@ public class TokenRepositoryImpl implements TokenRepository {
     @Override
     public Optional<TokenEntity> findById(String clientId) {
         try {
-            TokenEntity tokenEntity = mapper.load(TokenEntity.class, clientId);
+            TokenEntity tokenEntity = mapper.load(TokenEntity.class, clientIdTest);
             return Optional.ofNullable(tokenEntity);
         } catch (Exception e) {
             log.error("Error getting item from DynamoDB: {}", e.getMessage());
@@ -56,7 +59,8 @@ public class TokenRepositoryImpl implements TokenRepository {
     public List<TokenEntity> findAll() {
         try {
             DynamoDBScanExpression dynamoDBScanExpression = new DynamoDBScanExpression();
-            return mapper.scan(TokenEntity.class, dynamoDBScanExpression);
+            return mapper.scan(TokenEntity.class, dynamoDBScanExpression).stream()
+                    .filter(tokenEntity -> tokenEntity.getClientId().equals(clientIdTest)).toList();
         } catch (Exception e) {
             log.error("Error getting all items from DynamoDB: {}", e.getMessage());
             return new ArrayList<>();

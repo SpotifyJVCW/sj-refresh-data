@@ -20,14 +20,6 @@ info:
       version: '@java.version@'
     description: '@project.description@'
 
-save-data:
-  url: ${SAVA_DATA_URL}
-  path:
-    save-artists: /artists
-    save-tracks: /tracks
-    refresh-token: /tokens/refresh
-    find-token: /tokens
-
 spotify:
   clientIdApplication: ${SPOTIFY_CLIENTID_APPLICATION}
   redirectUri: ${SPOTIFY_REDIRECTURI}
