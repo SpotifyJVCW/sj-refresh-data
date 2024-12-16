@@ -78,11 +78,11 @@ public class SpotifyCallApi<C extends AbstractRequest<R>, R> {
                 .execute();
     }
 
-    public static Track[] getTopTracksByTerm(String term, String accessToken) {
+    public static Track[] getTopTracksByTerm(String term, String accessToken, Integer quantity) {
         SpotifyCallApi<GetUsersTopTracksRequest, Paging<Track>> spotifyCallApi = new SpotifyCallApi<>(accessToken);
         return spotifyCallApi.call(spotifyCallApi.builder()
                         .getUsersTopTracks()
-                            .limit(50)
+                            .limit(quantity)
                             .time_range(term)
                         .build())
                 .execute().map(Paging::getItems).orElse(new Track[0]);
