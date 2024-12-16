@@ -9,17 +9,13 @@ import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCrede
 import se.michaelthelin.spotify.model_objects.specification.*;
 import se.michaelthelin.spotify.requests.AbstractRequest;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.pkce.AuthorizationCodePKCERefreshRequest;
-import se.michaelthelin.spotify.requests.data.artists.GetSeveralArtistsRequest;
-import se.michaelthelin.spotify.requests.data.personalization.simplified.GetUsersTopArtistsRequest;
 import se.michaelthelin.spotify.requests.data.personalization.simplified.GetUsersTopTracksRequest;
 import se.michaelthelin.spotify.requests.data.playlists.CreatePlaylistRequest;
 import se.michaelthelin.spotify.requests.data.playlists.GetListOfCurrentUsersPlaylistsRequest;
 import se.michaelthelin.spotify.requests.data.playlists.ReplacePlaylistsItemsRequest;
-import se.michaelthelin.spotify.requests.data.tracks.GetSeveralTracksRequest;
 import se.michaelthelin.spotify.requests.data.users_profile.GetCurrentUsersProfileRequest;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -54,14 +50,6 @@ public class SpotifyCallApi<C extends AbstractRequest<R>, R> {
         return this;
     }
 
-    public static Artist[] getSeveralArtistsById(List<String> idList, String accessToken) {
-        SpotifyCallApi<GetSeveralArtistsRequest, Artist[]> spotifyCallApi = new SpotifyCallApi<>(accessToken);
-        return spotifyCallApi.call(spotifyCallApi.builder()
-                        .getSeveralArtists(idList.toArray(new String[0]))
-                        .build())
-                .execute().orElse(new Artist[0]);
-    }
-
     public static PlaylistSimplified[] getCurrentPlaylists(String accessToken, int limit, int offset) {
         SpotifyCallApi<GetListOfCurrentUsersPlaylistsRequest, Paging<PlaylistSimplified>> spotifyCallApi = new SpotifyCallApi<>(accessToken);
         return spotifyCallApi.call(spotifyCallApi.builder()
@@ -90,35 +78,17 @@ public class SpotifyCallApi<C extends AbstractRequest<R>, R> {
                 .execute();
     }
 
-    public static Artist[] getTopArtistsByTerm(String term, String accessToken) {
-        SpotifyCallApi<GetUsersTopArtistsRequest, Paging<Artist>> spotifyCallApi = new SpotifyCallApi<>(accessToken);
-        return spotifyCallApi.call(spotifyCallApi.builder()
-                        .getUsersTopArtists()
-                            .limit(50)
-                            .time_range(term)
-                        .build())
-                .execute().map(Paging::getItems).orElse(new Artist[0]);
-    }
-
-    public static Track[] getTopTracksByTerm(String term, String accessToken) {
+    public static Track[] getTopTracksByTerm(String term, String accessToken, Integer quantity) {
         SpotifyCallApi<GetUsersTopTracksRequest, Paging<Track>> spotifyCallApi = new SpotifyCallApi<>(accessToken);
         return spotifyCallApi.call(spotifyCallApi.builder()
                         .getUsersTopTracks()
-                            .limit(50)
+                            .limit(quantity)
                             .time_range(term)
                         .build())
                 .execute().map(Paging::getItems).orElse(new Track[0]);
     }
 
-    public static Track[] getSeveralTracksById(String[] ids, String accessToken) {
-        SpotifyCallApi<GetSeveralTracksRequest, Track[]> spotifyCallApi = new SpotifyCallApi<>(accessToken);
-        return spotifyCallApi.call(spotifyCallApi.builder()
-                        .getSeveralTracks(ids)
-                        .build())
-                .execute().orElse(new Track[0]);
-    }
-
-        public static User getUserInformation(String accessToken) {
+    public static User getUserInformation(String accessToken) {
         SpotifyCallApi<GetCurrentUsersProfileRequest, User> spotifyCallApi = new SpotifyCallApi<>(accessToken);
         return spotifyCallApi.call(spotifyCallApi.builder()
                         .getCurrentUsersProfile()

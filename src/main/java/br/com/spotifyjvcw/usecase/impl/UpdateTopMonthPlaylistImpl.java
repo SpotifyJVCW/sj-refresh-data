@@ -24,21 +24,25 @@ public class UpdateTopMonthPlaylistImpl implements UpdateTopMonthPlaylist {
     private final FindPlaylist findPlaylist;
     private final UpdatePlaylist updatePlaylist;
     private final RefreshAndSaveToken refreshAndSaveToken;
-    private static final String PLAYLIST_NAME = "Top 50 Tracks of the Month";
+    private static final String PLAYLIST_MONTH_NAME = "Top 50 Tracks of the Month";
+    private static final String PLAYLIST_OAT_NAME = "Top 10 Tracks of all time";
 
     @Override
     public void execute() {
         List<Token> tokens = refreshAndSaveToken.executeAll();
-        tokens.forEach(this::updatePlaylist);
+        tokens.forEach(token -> {
+            updatePlaylist(token, TermType.SHORT, 50, PLAYLIST_MONTH_NAME);
+            updatePlaylist(token, TermType.LONG, 10, PLAYLIST_OAT_NAME);
+        });
     }
 
-    private void updatePlaylist(Token token){
-        Track[] topTracksMonth = SpotifyCallApi.getTopTracksByTerm(TermType.SHORT.getDescription(), token.getAccessToken());
+    private void updatePlaylist(Token token, TermType termType, Integer quantity, String playlistName){
+        Track[] topTracks = SpotifyCallApi.getTopTracksByTerm(termType.getDescription(), token.getAccessToken(), quantity);
 
-        Optional<PlaylistSimplified> playlistSimplified = findPlaylist.byName(PLAYLIST_NAME, token);
+        Optional<PlaylistSimplified> playlistSimplified = findPlaylist.byName(playlistName, token);
         String playlistId = playlistSimplified.isPresent() ? playlistSimplified.get().getId() :
-                SpotifyCallApi.createPlaylist(token.getAccessToken(), token.getClientId(), PLAYLIST_NAME).getId();
+                SpotifyCallApi.createPlaylist(token.getAccessToken(), token.getClientId(), playlistName).getId();
 
-        updatePlaylist.execute(token, playlistId, Arrays.stream(topTracksMonth).map(Track::getId).toList());
+        updatePlaylist.execute(token, playlistId, Arrays.stream(topTracks).map(Track::getId).toList());
     }
 }
